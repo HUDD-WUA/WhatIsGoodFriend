@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WhatIsGoodFriend</string>
+    <string name="item_title_mainmap">查看朋友的位置</string>
+    <string name="item_text_mainmap">查看朋友的位置</string>
+</resources>
