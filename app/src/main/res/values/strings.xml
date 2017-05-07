@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">WhatIsGoodFriend</string>
+    <!--    main    -->
     <string name="item_title_mainmap">查看朋友的位置</string>
     <string name="item_text_mainmap">查看朋友的位置</string>
+    <!--    Login   -->
+    <string name="text_name">姓名</string>
+    <string name="text_password">密码</string>
+    <string name="sign_up">注册</string>
+    <string name="button_login">登陆</string>
+    <string name="plaintext_name">请输入账户名</string>
+    <string name="plaintext_password">请输入密码</string>
+    <string name="fail_login">登录失败！</string>
+    <string name="back">返回</string>
+    <string name="exit">退出</string>
+    <string name="welcome">，欢迎！</string>
+
 </resources>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <!--android:drawable="@drawable/radiusButton_2dp_pressed"-->
+        <layer-list
+            xmlns:android="http://schemas.android.com/apk/res/android">
+            <!--<item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/colorAllBackGround"/>
+                    <corners android:radius="3dp"/>
+                </shape>
+            </item>-->
+            <item android:bottom="1dp" android:left="0dp" android:right="1dp" android:top="0dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/shop_button_selected"/>
+                    <corners android:radius="3dp"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+        <item android:state_pressed="false">
+            <!--android:drawable="@drawable/radiusButton_2dp_default"-->
+            <layer-list
+                xmlns:android="http://schemas.android.com/apk/res/android">
+                <!--<item>
+                    <shape android:shape="rectangle">
+                        <solid android:color="@color/colorAllBackGround"/>
+                        <corners android:radius="3dp"/>
+                    </shape>
+                </item>-->
+                <item android:bottom="1dp" android:left="0dp" android:right="1dp" android:top="0dp">
+                    <shape android:shape="rectangle">
+                        <solid android:color="@color/shop_button_default"/>
+                        <corners android:radius="3dp"/>
+                    </shape>
+                </item>
+            </layer-list>
+        </item>
+
+    </selector>

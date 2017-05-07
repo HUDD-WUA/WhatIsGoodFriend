@@ -33,6 +33,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
+import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -43,6 +44,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Exchanger;
@@ -156,14 +158,21 @@ public class MainMap extends AppCompatActivity {
             return;
         }
         Location location = locationManager.getLastKnownLocation(provider);
-        if (location != null){
-            setLocation(location);
-            setLocationInBaiduMap(location);
+            if (location != null) {
+                setLocation(location);
+                setLocationInBaiduMap(location);
+            }
+            locationManager.requestLocationUpdates(provider, 1000, 0, locationListener);
+        try {
+            if (location == null) {
+                Log.d("sleep","start");
+                Thread.sleep(4000);
+                Log.d("sleep", "end");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        locationManager.requestLocationUpdates(provider, 5000, 10, locationListener);
-
         initOverlay(location);
-
     }
 
     LocationListener locationListener = new LocationListener() {
@@ -220,7 +229,7 @@ public class MainMap extends AppCompatActivity {
         LatLng llC = new LatLng(39.939723, 116.425541);
         LatLng llD = new LatLng(39.906965, 116.401394);
 
-        sendRequestWithHttpClient();
+        //sendRequestWithHttpClient();
 
         MarkerOptions ooA = new MarkerOptions().position(llA).icon(bdA)
                 .zIndex(9).draggable(true);
@@ -371,7 +380,7 @@ public class MainMap extends AppCompatActivity {
         bd.recycle();
         bdGround.recycle();*/
     }
-    private void sendRequestWithHttpClient() {
+    /*private void sendRequestWithHttpClient() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -385,7 +394,10 @@ public class MainMap extends AppCompatActivity {
                     if (httpResponse.getStatusLine().getStatusCode() == 200){
                         HttpEntity entity = httpResponse.getEntity();
                         String response = EntityUtils.toString(entity, "utf-8");
-                        Log.d("getjson", response);
+
+                        Gson gson = new Gson();
+                        User user = gson.fromJson(response, User.class);
+                        Log.d("getjson", user.getName().toString());
                         //parseXMLWithPull(response);
                     }
                 }catch (Exception e){
@@ -394,7 +406,7 @@ public class MainMap extends AppCompatActivity {
             }
         }).start();
     }
-
+*/
     private void parseXMLWithPull(String  xmlData){
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();

@@ -4,5 +4,13 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="main_yello">#ffd513</color>
+    <color name="state_bar_main_yello">#c9a80f</color>
 
+    <!-- Login -->
+    <color name="colorAllBackGround">#f1f1f1</color>
+    <color name="shop_button_selected">#1f272d</color>
+    <color name="shop_button_default">#323f48</color>
+    <color name="signup_selected">#afafaf</color>
 </resources>
