@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //获取地图控件引用
         //mMapView = (MapView) findViewById(R.id.bmapView);
-
         ListView mListView = (ListView) findViewById(R.id.listView);
         // 添加ListItem，设置事件响应
         mListView.setAdapter(new ListAdapter(this));
@@ -70,6 +69,13 @@ public class MainActivity extends AppCompatActivity {
         iFilter.addAction(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR);
         mReceiver = new SDKReceiver();
         registerReceiver(mReceiver, iFilter);
+
+        //开启服务（向后台定时传送自己的坐标)
+        Bundle bundle = this.getIntent().getExtras();
+        String user_name = bundle.getString("user_name");
+        Intent intent = new Intent(getApplicationContext(), AlarmService.class);
+        intent.putExtra("user_name", user_name);
+        startService(intent);
 
     }
     @Override
@@ -95,8 +101,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static final ItemData_class[] itemdata = {
-            new ItemData_class(R.string.item_title_mainmap, R.string.item_text_mainmap, MainMap.class)
-};
+            new ItemData_class(R.string.item_title_mainmap, R.string.item_text_mainmap, MainMap.class),
+            new ItemData_class(R.string.item_title_mainmap, R.string.item_text_mainmap, MainMap.class),
+    };
 
     private class ListAdapter extends BaseAdapter {
         public ListAdapter() {
@@ -110,22 +117,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(int index, View convertView, ViewGroup parent) {
-            /*convertView = View.inflate(MainActivity.this,
-                    R.layout.list_item_info, null);
-            TextView title = (TextView) convertView.findViewById(R.id.title);
-            TextView text = (TextView) convertView.findViewById(R.id.text);
-            title.setText(itemdata[index].title);
-            text.setText(itemdata[index].text);
-            if (index >= 25) {
-                title.setTextColor(Color.YELLOW);
-            }
-            return convertView; */
+
 
             ViewHolder holder;
             Log.v("BaseAdapterTest", "getView " + index + " " + convertView);
 
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.list_item_info, null);
+                convertView = mInflater.inflate(R.layout.main_list_item_info, null);
                 holder = new ViewHolder();
                 /*得到各个控件的对象*/
                 holder.title = (TextView) convertView.findViewById(R.id.title);

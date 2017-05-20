@@ -14,5 +14,14 @@
     <string name="back">返回</string>
     <string name="exit">退出</string>
     <string name="welcome">，欢迎！</string>
+    <!--    signup   -->
+    <string name="plaintext_signup_name">请设置账户名</string>
+    <string name="plaintext_signup_password">请设置密码</string>
+    <string name="fail_signup_repetitive_name">此用户名已被使用,请更换！</string>
+    <string name="fail_signup_wrong_password">密码只能包含字母和数字！</string>
+    <string name="signup_success">注册成功！</string>
+    <string name="fail_signup_null_password">请输入密码！</string>
+    <string name="fail_signup_null_name">请输入用户名！</string>
+
 
 </resources>

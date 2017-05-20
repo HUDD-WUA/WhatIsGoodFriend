@@ -11,7 +11,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -38,28 +37,23 @@ public class MainLogin extends AppCompatActivity {
         textView_signup.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent intent_signup = new Intent(MainLogin.this, MainActivity.class);
+                Intent intent_signup = new Intent(MainLogin.this, LoginSignup.class);
                 startActivity(intent_signup);
             }
         });
         textView_signup.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                textView_signup.setTextColor(getResources().getColor(R.color.signup_selected));
-                if (event.getAction() == MotionEvent.ACTION_BUTTON_RELEASE){
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    textView_signup.setTextColor(getResources().getColor(R.color.signup_selected));
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP){
                     textView_signup.setTextColor(getResources().getColor(R.color.black));
                 }
                 return false;
             }
         });
-        textView_signup.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus == false){
-                    textView_signup.setTextColor(getResources().getColor(R.color.black));
-                }
-            }
-        });
+
         Button button_login = (Button)findViewById(R.id.button_login);
         final EditText editText_name = (EditText)findViewById(R.id.editText_name);
         final EditText editText_password = (EditText)findViewById(R.id.editText_password);
@@ -135,7 +129,7 @@ public class MainLogin extends AppCompatActivity {
         }
         return null;
     }
-
+//useless func
     public static void setClickableTextView(Context context, TextView textView, Intent intent) {
         String text = textView.getText().toString();
         SpannableStringBuilder builder = new SpannableStringBuilder(text);

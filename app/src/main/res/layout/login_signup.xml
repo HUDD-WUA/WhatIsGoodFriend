@@ -33,7 +33,7 @@
             android:id="@+id/editText_name"
             android:textSize="14sp"
             android:textColorHint="#cecece"
-            android:hint="@string/plaintext_name" />
+            android:hint="@string/plaintext_signup_name" />
     </LinearLayout>
 
     <LinearLayout
@@ -59,7 +59,7 @@
             android:id="@+id/editText_password"
             android:textColorHint="#cecece"
             android:textSize="14sp"
-            android:hint="@string/plaintext_password" />
+            android:hint="@string/plaintext_signup_password" />
     </LinearLayout>
 
     <LinearLayout
@@ -68,25 +68,16 @@
         android:layout_marginTop="22dp"
         >
         <Button
-            android:text="@string/button_login"
+            android:text="@string/sign_up"
             android:width="312dp"
             android:height="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button_login"
+            android:id="@+id/button_signup"
             android:background="@drawable/login_button_xml"
             android:textColor="#ffffff"
             android:textSize="18sp" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:text="@string/sign_up"
-        android:textColorLink="#2c2c2c"
-        android:layout_gravity="center"
-        android:layout_marginTop="210dp"
-        android:id="@+id/text_sign_up" />
-
 </LinearLayout>
+
