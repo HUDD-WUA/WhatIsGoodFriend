@@ -8,5 +8,18 @@
         <item name="colorAccent">@android:color/darker_gray</item>
         <item name="android:colorBackground">@color/main_yello</item>
     </style>
-
+    <style name="Theme_Main" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/state_bar_main_yello</item>
+        <item name="colorAccent">@android:color/darker_gray</item>
+        <item name="android:colorBackground">@color/friend_backgroung</item>
+    </style>
+    <style name="Theme_FriendMain" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/state_bar_main_yello</item>
+        <item name="colorAccent">@android:color/darker_gray</item>
+        <item name="android:colorBackground">@color/friend_backgroung</item>
+    </style>
 </resources>

@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import com.baidu.mapapi.SDKInitializer;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ThisClass = MainActivity.class.getSimpleName();
+    String user_name;
     public class SDKReceiver extends BroadcastReceiver {
 
         public void onReceive(Context context, Intent intent) {
@@ -36,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
                         + " ; 请在 AndroidManifest.xml 文件中检查 key 设置");
             } else if (IntentAction.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_OK)) {
                 text.setText("key 验证成功! 功能可以正常使用");
-                text.setTextColor(Color.BLACK);
             } else if (IntentAction.equals(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR)) {
                 text.setText("网络出错, 请检查网络设置!");
             }
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         //在使用SDK各组件之前初始化context信息，传入ApplicationContext
         //注意该方法要再setContentView方法之前实现
         setContentView(R.layout.activity_main);
+        setCustomActionBar();
         //获取地图控件引用
         //mMapView = (MapView) findViewById(R.id.bmapView);
         ListView mListView = (ListView) findViewById(R.id.listView);
@@ -70,9 +73,10 @@ public class MainActivity extends AppCompatActivity {
         mReceiver = new SDKReceiver();
         registerReceiver(mReceiver, iFilter);
 
+
         //开启服务（向后台定时传送自己的坐标)
         Bundle bundle = this.getIntent().getExtras();
-        String user_name = bundle.getString("user_name");
+        user_name = bundle.getString("user_name");
         Intent intent = new Intent(getApplicationContext(), AlarmService.class);
         intent.putExtra("user_name", user_name);
         startService(intent);
@@ -95,14 +99,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void onListItemClick(int index) {
-        Intent intent;
-        intent = new Intent(MainActivity.this, itemdata[index].linkclass);
-        this.startActivity(intent);
+        if (itemdata[index].text != R.string.item_text_more) {
+            Intent intent;
+            intent = new Intent(MainActivity.this, itemdata[index].linkclass);
+            intent.putExtra("user_name", user_name);
+            this.startActivity(intent);
+        }
     }
 
     private static final ItemData_class[] itemdata = {
             new ItemData_class(R.string.item_title_mainmap, R.string.item_text_mainmap, MainMap.class),
-            new ItemData_class(R.string.item_title_mainmap, R.string.item_text_mainmap, MainMap.class),
+            new ItemData_class(R.string.item_title_friendpos, R.string.item_text_friendpos, MainFriend.class),
+            new ItemData_class(R.string.item_title_more, R.string.item_text_more, MainFriend.class),
     };
 
     private class ListAdapter extends BaseAdapter {
@@ -182,5 +190,14 @@ public class MainActivity extends AppCompatActivity {
 
         public ViewHolder() {}
     }
-
+    private void setCustomActionBar() {
+        ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
+        View mActionBarView = LayoutInflater.from(this).inflate(R.layout.main_action_bar, null);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(mActionBarView, lp);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+    }
 }

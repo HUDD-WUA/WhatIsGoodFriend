@@ -1,28 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.daimajia.swipe.SwipeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/message_center_item_swipe"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:layout_height="wrap_content"
+    swipe:leftEdgeSwipeOffset="0dp"
+    swipe:rightEdgeSwipeOffset="0dp">
+    <LinearLayout
+        android:id="@+id/message_center_item_delete"
+        android:layout_width="70dp"
+        android:layout_height="56dp"
+        android:background="#FF5534"
+        android:gravity="center"
+        android:tag="Bottom3"
+        android:weightSum="10" >
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:textSize="24sp"
-        android:layout_weight="1"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="删除"
+            android:textColor="#fff"
+            android:textSize="17sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:background="@drawable/item_selector"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <FrameLayout
+            android:layout_width="30dp"
+            android:layout_height="1dp"
+            android:background="@color/white">
 
-    <Button
-        android:focusable="false"
-        android:id="@+id/delete"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="30dp"
-        android:text="删除"
-        android:background="#cecece"
-        android:textSize="18sp"
-        android:width="20dp"
-        android:height="20dp"
-        />
+        </FrameLayout>
+        <TextView
+            android:text="点击查看"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/name"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            />
+        <TextView
+            android:text="的位置"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            />
+    </LinearLayout>
 
-</LinearLayout>
+
+</com.daimajia.swipe.SwipeLayout>

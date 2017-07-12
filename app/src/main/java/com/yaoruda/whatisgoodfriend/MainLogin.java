@@ -61,8 +61,8 @@ public class MainLogin extends AppCompatActivity {
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String user_name = editText_name.getText().toString();
-                String user_password = editText_password.getText().toString();
+                String user_name = editText_name.getText().toString().trim();
+                String user_password = editText_password.getText().toString().trim();
                 String response_password = sendRequest_login(user_name);
 
                 if (!response_password.equals("null")) {
@@ -128,15 +128,5 @@ public class MainLogin extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
-    }
-//useless func
-    public static void setClickableTextView(Context context, TextView textView, Intent intent) {
-        String text = textView.getText().toString();
-        SpannableStringBuilder builder = new SpannableStringBuilder(text);
-        MyClickableSpan myClickableSpan = new MyClickableSpan(context, intent);
-        builder.setSpan(myClickableSpan, 0, text.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(builder);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

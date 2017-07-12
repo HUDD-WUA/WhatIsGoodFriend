@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">WhatIsGoodFriend</string>
     <!--    main    -->
-    <string name="item_title_mainmap">查看朋友的位置</string>
-    <string name="item_text_mainmap">查看朋友的位置</string>
+    <string name="main_action_bar">WhatIsGoodFriend</string>
+    <string name="item_title_mainmap">我的位置</string>
+    <string name="item_text_mainmap">在地图上显示我的位置</string>
+    <string name="item_title_friendpos">朋友列表</string>
+    <string name="item_text_friendpos">添加、删除、查看朋友位置</string>
+    <string name="item_title_more">更多功能</string>
+    <string name="item_text_more">敬请期待</string>
     <!--    Login   -->
     <string name="text_name">姓名</string>
     <string name="text_password">密码</string>
@@ -22,6 +27,8 @@
     <string name="signup_success">注册成功！</string>
     <string name="fail_signup_null_password">请输入密码！</string>
     <string name="fail_signup_null_name">请输入用户名！</string>
+    <!--  Friend -->
+    <string name="Friend">我的朋友</string>
 
 
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#ffd513</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="black">#000000</color>
@@ -13,4 +13,9 @@
     <color name="shop_button_selected">#1f272d</color>
     <color name="shop_button_default">#323f48</color>
     <color name="signup_selected">#afafaf</color>
+
+    <!-- Friend -->
+    <color name="friend_item_selected">#f9f9f9</color>
+    <color name="item_divider">#efefef</color>
+    <color name="friend_backgroung">#f1f1f1</color>
 </resources>

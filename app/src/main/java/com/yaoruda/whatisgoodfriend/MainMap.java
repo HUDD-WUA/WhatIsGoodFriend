@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +35,9 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -43,9 +47,12 @@ import org.apache.http.util.EntityUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.PipedReader;
+import java.io.PipedWriter;
 import java.io.StringReader;
 import java.security.spec.ECField;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Exchanger;
 
@@ -66,30 +73,28 @@ public class MainMap extends AppCompatActivity {
     private String provider;
     private boolean isFirstLocate = true;
 
-
+    String friend_name;//朋友名称
+    String user_name;//本用户
     // 初始化全局 bitmap 信息，不用时及时 recycle
     BitmapDescriptor bdA = BitmapDescriptorFactory
-            .fromResource(R.drawable.icon_marka);
+            .fromResource(R.drawable.icon_gcoding);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_map);
-
-        //地图部分
+        //加载地图
         mMapView = (MapView) findViewById(R.id.bmapView);
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMyLocationEnabled(true);
         MapStatusUpdate msu = MapStatusUpdateFactory.zoomTo(13.0f);
         mBaiduMap.setMapStatus(msu);
-        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+        //设置点击mark的默认动作
+        /*mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             public boolean onMarkerClick(final Marker marker) {
                 /*LatLng ll = marker.getPosition();
-
                 float mapZoom = mMapView.getMapLevel();
                 MapStatusUpdate msu = MapStatusUpdateFactory.zoomTo(mapZoom);
-*/
-
 
                 Button button = new Button(getApplicationContext());
                 button.setBackgroundResource(R.drawable.popup);
@@ -112,7 +117,7 @@ public class MainMap extends AppCompatActivity {
                     LatLng ll = marker.getPosition();
                     mInfoWindow = new InfoWindow(BitmapDescriptorFactory.fromView(button), ll, -47, listener);
                     mBaiduMap.showInfoWindow(mInfoWindow);
-                } /*else if (marker == mMarkerB) {
+                } else if (marker == mMarkerB) {
                     button.setText("更改图标");
                     button.setTextColor(Color.BLACK);
                     button.setOnClickListener(new View.OnClickListener() {
@@ -136,43 +141,54 @@ public class MainMap extends AppCompatActivity {
                     LatLng ll = marker.getPosition();
                     mInfoWindow = new InfoWindow(button, ll, -47);
                     mBaiduMap.showInfoWindow(mInfoWindow);
-                }*/
+                }
                 return true;
             }
-        });
-        //定位部分
-        if (Build.VERSION.SDK_INT >= 23)
-            if(MainMap.this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "No Location permission!", Toast.LENGTH_SHORT).show();
-            }
+        });*/
+        //获取参数并判断具体展示功能
+        Bundle bundle = this.getIntent().getExtras();
+        friend_name = bundle.getString("friend_name");//从friend界面获取具体某个朋友的名称
+        user_name = bundle.getString("user_name");
+        if (friend_name == null && user_name != null) {//显示自己位置
+            //定位并显示自己的位置
+            if (Build.VERSION.SDK_INT >= 23)
+                if(MainMap.this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "No Location permission!", Toast.LENGTH_SHORT).show();
+                }
 
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        //获取位置提供器
-        List<String> providerList = locationManager.getProviders(true);
-        if (providerList.contains(LocationManager.GPS_PROVIDER)){
-            provider = LocationManager.GPS_PROVIDER;
-        } else if (providerList.contains((LocationManager.NETWORK_PROVIDER))) {
-            provider = LocationManager.NETWORK_PROVIDER;
-        }else {
-            Toast.makeText(this, "No Location provider to use!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(provider);
+            locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            //获取位置提供器
+            List<String> providerList = locationManager.getProviders(true);
+            if (providerList.contains(LocationManager.GPS_PROVIDER)){
+                provider = LocationManager.GPS_PROVIDER;
+            } else if (providerList.contains((LocationManager.NETWORK_PROVIDER))) {
+                provider = LocationManager.NETWORK_PROVIDER;
+            }else {
+                Toast.makeText(this, "No Location provider to use!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Location location = locationManager.getLastKnownLocation(provider);
             if (location != null) {
                 setLocation(location);
                 setLocationInBaiduMap(location);
             }
             locationManager.requestLocationUpdates(provider, 1000, 0, locationListener);
-        try {
-            if (location == null) {
-                Log.d("sleep","start");
-                Thread.sleep(4000);
-                Log.d("sleep", "end");
+        }else if (friend_name != null && user_name == null) {//显示某个朋友的位置
+            Double[] friend_location = getFriendLocation(friend_name);
+            if (friend_location[0] == 0.0){
+                new AlertDialog.Builder(MainMap.this).setTitle("没有\""+friend_name+"\"的位置信息！")
+                        .setMessage("请让\""+friend_name+"\"也运行此应用，您们就可以相互看到彼此的位置了！")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
             }
-        }catch (Exception e){
-            e.printStackTrace();
+            initOverlay(friend_location);
         }
-        initOverlay(location);
+
+
     }
 
     LocationListener locationListener = new LocationListener() {
@@ -222,9 +238,11 @@ public class MainMap extends AppCompatActivity {
         }
     }
 
-    public void initOverlay(Location location) {
+    public void initOverlay(Double[] location) {
         // add marker overlay
-        LatLng llA = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng llA = new LatLng(location[0], location[1]);
+        Log.d("la",location[0].toString());
+        Log.d("lo",location[1].toString());
         LatLng llB = new LatLng(39.942821, 116.369199);
         LatLng llC = new LatLng(39.939723, 116.425541);
         LatLng llD = new LatLng(39.906965, 116.401394);
@@ -238,6 +256,8 @@ public class MainMap extends AppCompatActivity {
             ooA.animateType(MarkerOptions.MarkerAnimateType.drop);
         }*/
         mMarkerA = (Marker) (mBaiduMap.addOverlay(ooA));
+        MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(llA,16.0f);
+        mBaiduMap.setMapStatus(msu);
         /*MarkerOptions ooB = new MarkerOptions().position(llB).icon(bdB)
                 .zIndex(5);
         if (animationBox.isChecked()) {
@@ -380,72 +400,82 @@ public class MainMap extends AppCompatActivity {
         bd.recycle();
         bdGround.recycle();*/
     }
-    /*private void sendRequestWithHttpClient() {
+    public Double[] getFriendLocation(final String friend_name) {
+        final PipedWriter pipedWriter = new PipedWriter();
+        PipedReader pipedReader = new PipedReader();
+        try {
+            pipedWriter.connect(pipedReader);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        //建立连接管道
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     org.apache.http.client.HttpClient httpClient = new org.apache.http.impl.client.DefaultHttpClient();
-                    HttpGet httpGet = new HttpGet("http://10.0.2.2:8080/whatIsGoodFriend/Login?name=yaoruda&password=123456");
-
-
-
+                    HttpGet httpGet = new HttpGet("http://" +
+                            "10.0.2.2:8080/whatIsGoodFriend/GetFriendLocation?friend="+friend_name);
                     HttpResponse httpResponse = httpClient.execute(httpGet);
                     if (httpResponse.getStatusLine().getStatusCode() == 200){
                         HttpEntity entity = httpResponse.getEntity();
-                        String response = EntityUtils.toString(entity, "utf-8");
-
-                        Gson gson = new Gson();
-                        User user = gson.fromJson(response, User.class);
-                        Log.d("getjson", user.getName().toString());
-                        //parseXMLWithPull(response);
+                        String res_friend = EntityUtils.toString(entity, "utf-8");
+                        if (res_friend != null) {
+                            Log.d("getjson", res_friend);
+                            pipedWriter.write(res_friend);
+                        }else{
+                            pipedWriter.write("null");
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         }).start();
-    }
-*/
-    private void parseXMLWithPull(String  xmlData){
+
         try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            XmlPullParser xmlPullParser = factory.newPullParser();
-            xmlPullParser.setInput(new StringReader(xmlData));
-            int eventType = xmlPullParser.getEventType();
-            String id = "";
-            String name ="";
-            String version = "";
-            while (eventType != XmlPullParser.END_DOCUMENT){
-                String nodeName = xmlPullParser.getName();
-                switch (eventType){
-                    //开始解析
-                    case XmlPullParser.START_TAG: {
-                        if ("id".equals(nodeName)){
-                            id = xmlPullParser.nextText();
-                        }else if ("name".equals(nodeName)){
-                            name = xmlPullParser.nextText();
-                        }else if ("version".equals(nodeName)){
-                            version = xmlPullParser.nextText();
-                        }
-                        break;
-                    }
-                    //完成解析
-                    case XmlPullParser.END_TAG: {
-                        if ("app".equals(nodeName)){
-                            Log.d("MainMap", "id is " + id);
-                            Log.d("MainMap", "name is " + name);
-                            Log.d("MainMap", "version is " + version);
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                eventType = xmlPullParser.next();
+            char[] buf = new char[2048];
+            int len = pipedReader.read(buf);
+            String response = new String(buf, 0, len);
+            Double[] friend_location = new Double[2];
+            //解析json数组
+            Gson gson = new Gson();
+            int arraySize;
+            if(response.equals(""))
+            {
+                return null;
             }
+            System.out.println(response);
+
+            JsonParser parser = new JsonParser();//parse用于从一个字符串中解析出json对象
+            JsonElement element = parser.parse(response);//解析出json对象
+            JsonArray jsonArray = null;
+            if (element.isJsonArray())
+
+            {//还可以是其他的很多种类型，不过这里肯定是JsonArray，以往万一判断了一下
+                jsonArray = element.getAsJsonArray();//这里就已经是真正的json数组了
+                arraySize = jsonArray.size();//json数组就可以获取数量了
+                System.out.println(arraySize);
+            }
+
+            Iterator it = jsonArray.iterator();//使用迭代器来获取json数组内容
+            for (
+                    int i = 0;
+                    it.hasNext() == true; i++)
+
+            {//读取所有信息
+                JsonElement e = (JsonElement) it.next();//第一次是指向最开始的之前的，所以第一次也会先next一次
+                friend_location[i] = gson.fromJson(e, Double.class);//每次获取一个对象保存
+                System.out.println("Location name: " + friend_location[i]);
+            }
+            return friend_location;
+
         }catch (Exception e){
             e.printStackTrace();
         }
+        return null;
     }
+
 }

@@ -30,18 +30,20 @@
             android:value="8VQFuxkfSDNPGHpDmXEljkPkG5vGab4S" />
 
         <activity android:name=".MainLogin">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme_Main"/>
         <activity android:name=".MainMap"/>
         <activity android:name=".LoginSignup"/>
-        <activity android:name=".MainFriend">
+        <activity android:name=".MainFriend"
+            android:theme="@style/Theme_FriendMain">
 
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
 
         </activity>
 
